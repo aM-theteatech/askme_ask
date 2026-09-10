@@ -53,6 +53,22 @@
         .block-media { background-color: var(--scratch-green); }
         .block-link { background-color: var(--scratch-red); }
 
+        @media (max-width: 767px) {
+            body {
+                height: 100vh;
+                height: 100dvh;
+            }
+            .mobile-panel-hidden {
+                display: none !important;
+            }
+            .mobile-panel-active {
+                display: flex !important;
+                flex: 1 1 auto;
+                height: calc(100vh - 125px);
+                height: calc(100dvh - 125px);
+            }
+        }
+
         .workspace-slot {
             min-height: 40px;
             padding: 10px;
@@ -180,86 +196,103 @@
 </head>
 <body>
 
-    <header class="bg-white border-b px-6 py-3 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-500 text-white p-2 rounded-lg">
+    <header class="bg-white border-b px-3 md:px-6 py-2 md:py-3 flex flex-wrap md:flex-nowrap justify-between items-center gap-2 shadow-sm z-10">
+        <div class="flex items-center gap-2 md:gap-3">
+            <div class="bg-blue-500 text-white p-2 rounded-lg text-sm md:text-base">
                 <i class="fas fa-code"></i>
             </div>
             <div>
-                <h1 class="text-xl font-bold text-gray-700">HTML Blocks <span class="text-sm font-normal text-gray-400">Junior Web Dev</span></h1>
-                <p class="text-[10px] text-gray-400 -mt-1 font-medium italic">by Teacher Amy</p>
+                <h1 class="text-base md:text-xl font-bold text-gray-700 leading-tight">HTML Blocks <span class="hidden sm:inline text-xs md:text-sm font-normal text-gray-400">Junior Web Dev</span></h1>
+                <p class="text-[9px] md:text-[10px] text-gray-400 font-medium italic">by Teacher Amy</p>
             </div>
         </div>
         
-        <!-- Score Display (Middle) -->
-        <div class="flex items-center bg-yellow-400 px-6 py-1.5 rounded-full shadow-inner border-2 border-yellow-500">
-            <i class="fas fa-star text-white mr-2"></i>
+        <!-- Score Display -->
+        <div class="flex items-center bg-yellow-400 px-3 md:px-6 py-1 md:py-1.5 rounded-full shadow-inner border border-yellow-500 text-xs md:text-sm">
+            <i class="fas fa-star text-white mr-1.5"></i>
             <span class="font-bold text-yellow-900">MARKS: <span id="current-marks">0</span> / 400</span>
         </div>
 
-        <div class="flex gap-2 items-center">
-            <div class="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full mr-2">
-                Level: <span id="current-level-display">1</span> / 4
+        <div class="flex gap-1.5 md:gap-2 items-center w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-1.5 md:pt-0">
+            <div class="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
+                Lvl: <span id="current-level-display">1</span>/4
             </div>
-            <button onclick="shuffleToolbox()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1 rounded-full transition border border-blue-100">
-                <i class="fas fa-random mr-1"></i> Shuffle
-            </button>
-            <button onclick="openAIBuilder()" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-600 px-3 py-1 rounded-full transition border border-purple-100">
-                ✨ AI Auto-Build
-            </button>
-            <button onclick="resetEverything()" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-full transition border border-red-100">
-                <i class="fas fa-trash-alt mr-1"></i> Reset All
-            </button>
+            <div class="flex gap-1">
+                <button onclick="shuffleToolbox()" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1 rounded-full transition border border-blue-100">
+                    <i class="fas fa-random sm:mr-1"></i><span class="hidden sm:inline">Shuffle</span>
+                </button>
+                <button onclick="openAIBuilder()" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-600 px-2.5 py-1 rounded-full transition border border-purple-100">
+                    ✨ <span class="hidden sm:inline">AI Build</span>
+                </button>
+                <button onclick="resetEverything()" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1 rounded-full transition border border-red-100">
+                    <i class="fas fa-trash-alt sm:mr-1"></i><span class="hidden sm:inline">Reset</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="flex flex-1 overflow-hidden">
-        <aside class="w-64 border-r bg-white flex flex-col">
-            <div class="panel-header">Toolbox</div>
-            <div class="scroller p-3" id="toolbox"></div>
+    <nav class="flex md:hidden bg-slate-200 border-b text-xs font-bold text-gray-600">
+        <button id="tab-btn-toolbox" onclick="switchMobileTab('toolbox')" class="flex-1 py-2.5 text-center bg-white text-blue-600 border-b-2 border-blue-500">
+            <i class="fas fa-toolbox mr-1"></i> 1. Toolbox
+        </button>
+        <button id="tab-btn-workspace" onclick="switchMobileTab('workspace')" class="flex-1 py-2.5 text-center">
+            <i class="fas fa-cubes mr-1"></i> 2. Workspace
+        </button>
+        <button id="tab-btn-preview" onclick="switchMobileTab('preview')" class="flex-1 py-2.5 text-center">
+            <i class="fas fa-eye mr-1"></i> 3. Preview
+        </button>
+    </nav>
+
+    <main class="flex flex-col md:flex-row flex-1 overflow-hidden relative">
+        <aside id="panel-toolbox" class="w-full md:w-64 border-r bg-white flex flex-col mobile-panel-active md:!flex">
+            <div class="panel-header flex justify-between items-center">
+                <span>Toolbox</span>
+                <span class="text-[10px] bg-blue-400 px-2 py-0.5 rounded font-normal md:hidden">Tap block to add</span>
+            </div>
+            <div class="scroller p-3 flex-1" id="toolbox"></div>
         </aside>
 
-        <section class="flex-1 flex flex-col bg-slate-50 relative">
+        <section id="panel-workspace" class="w-full md:flex-1 flex flex-col bg-slate-50 relative mobile-panel-hidden md:!flex">
             <div class="panel-header bg-indigo-500">
                 Workspace 
-                <span id="level-instruction" class="text-xs font-normal opacity-90">Arrange blocks in order!</span>
+                <span id="level-instruction" class="text-xs font-normal opacity-90 block sm:inline mt-0.5 sm:mt-0">Arrange blocks in order!</span>
             </div>
-            <div class="scroller p-6" id="workspace">
+            <div class="scroller p-3 md:p-6 flex-1 pb-24 md:pb-20" id="workspace">
                 <div id="workspace-hint">
                     <i class="fas fa-lightbulb mt-1"></i>
                     <p><strong>Hint:</strong> <span id="hint-text">Arrange blocks to build your website structure.</span></p>
                 </div>
-                <div class="workspace-slot h-full" id="root-slot" data-slot="root">
+                <div class="workspace-slot min-h-[250px] md:h-full" id="root-slot" data-slot="root">
                     <div class="text-center text-gray-300 mt-10 pointer-events-none">
                         <i class="fas fa-puzzle-piece text-4xl mb-2"></i>
-                        <p>Drag & Drop Blocks Here</p>
+                        <p>Drag & Drop or Tap Blocks from Toolbox</p>
                     </div>
                 </div>
             </div>
             
-            <div class="absolute bottom-6 right-6 flex gap-3">
-                <button onclick="generateOutput()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
-                    <i class="fas fa-play mr-2"></i> Run Code
+            <div class="fixed md:absolute bottom-3 md:bottom-6 left-3 right-3 md:left-auto md:right-6 flex gap-2 md:gap-3 z-10">
+                <button onclick="generateOutput(); if(window.innerWidth < 768) switchMobileTab('preview');" class="flex-1 md:flex-none bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 md:py-3 px-4 md:px-8 rounded-full shadow-lg transition transform active:scale-95 text-xs md:text-sm">
+                    <i class="fas fa-play mr-1 md:mr-2"></i> Run Code
                 </button>
-                <button onclick="checkAnswer()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
-                    <i class="fas fa-check mr-2"></i> Check Answer
+                <button onclick="checkAnswer()" class="flex-1 md:flex-none bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 md:py-3 px-4 md:px-8 rounded-full shadow-lg transition transform active:scale-95 text-xs md:text-sm">
+                    <i class="fas fa-check mr-1 md:mr-2"></i> Check Answer
                 </button>
             </div>
         </section>
 
-        <aside class="w-80 border-l bg-white flex flex-col">
+        <aside id="panel-preview" class="w-full md:w-80 border-l bg-white flex flex-col mobile-panel-hidden md:!flex">
             <div class="panel-header bg-emerald-500">Live Preview</div>
-            <div class="p-4 flex-1 flex flex-col">
+            <div class="p-3 md:p-4 flex-1 flex flex-col overflow-y-auto">
                 <div class="mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Browser Output</div>
-                <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
+                <iframe id="preview-frame" class="h-48 md:h-52 w-full bg-white border rounded"></iframe>
                 
-                <div class="mt-6 mb-2 flex justify-between items-center">
+                <div class="mt-4 md:mt-6 mb-2 flex justify-between items-center">
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider">Source Code</div>
                     <button id="explain-btn" onclick="explainCode()" class="text-[10px] bg-purple-100 text-purple-600 px-2 py-0.5 rounded hover:bg-purple-200 hidden">
                         ✨ Explain Code
                     </button>
                 </div>
-                <div class="code-display flex-1 overflow-auto" id="code-output">&lt;!-- No code yet --&gt;</div>
+                <div class="code-display flex-1 min-h-[120px] overflow-auto" id="code-output">&lt;!-- No code yet --&gt;</div>
             </div>
         </aside>
     </main>
@@ -326,7 +359,25 @@
         const apiKey = "";
         let currentLevel = 1;
         let totalMarks = 0;
-        
+        let activeMobileTab = 'toolbox';
+
+        function switchMobileTab(tab) {
+            activeMobileTab = tab;
+            ['toolbox', 'workspace', 'preview'].forEach(t => {
+                const panel = document.getElementById(`panel-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (t === tab) {
+                    panel.classList.remove('mobile-panel-hidden');
+                    panel.classList.add('mobile-panel-active');
+                    btn.classList.add('bg-white', 'text-blue-600', 'border-b-2', 'border-blue-500');
+                } else {
+                    panel.classList.add('mobile-panel-hidden');
+                    panel.classList.remove('mobile-panel-active');
+                    btn.classList.remove('bg-white', 'text-blue-600', 'border-b-2', 'border-blue-500');
+                }
+            });
+        }
+
         const levels = {
             1: { 
                 instruction: "Level 1: Basic Structure. Add <html>, <title>, and <body> blocks.", 
@@ -421,9 +472,19 @@
                 block.innerHTML = `
                     <div class="tag-main-row">
                         <span class="tag-label">${def.label}</span>
-                        ${def.input !== undefined ? `<input type="text" class="block-input" value="${def.input}">` : ''}
+                        ${def.input !== undefined ? `<input type="text" class="block-input" value="${def.input}" onclick="event.stopPropagation()">` : ''}
                     </div>
                 `;
+                
+                block.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'INPUT') return;
+                    const slot = document.getElementById('root-slot');
+                    if (slot.querySelector('.pointer-events-none')) slot.innerHTML = '';
+                    const newBlock = createBlockInstance(def.type, block.querySelector('input')?.value);
+                    slot.appendChild(newBlock);
+                    generateOutput();
+                });
+
                 toolbox.appendChild(block);
             });
         }
